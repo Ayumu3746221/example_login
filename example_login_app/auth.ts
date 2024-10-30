@@ -69,6 +69,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             access_token: string;
             expires_in: number;
             refresh_token?: string;
+            id_token: string;
           };
 
           token.access_token = newTokens.access_token;
@@ -79,6 +80,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (newTokens.refresh_token)
             token.refresh_token = newTokens.refresh_token;
 
+          token.id_token = newTokens.id_token;
           return token;
         } catch (error) {
           console.error("Error refreshing access_token", error);
