@@ -37,36 +37,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, account }: { token: JWT; account: Account | null }) {
       //Firest-time login, save the `access_token` , its expiry and the `refresh_token`
       if (account) {
-        // console.log(
-        //   "Test run callback route is if{account}",
-        //   "this is account.refresh_token",
-        //   account.refresh_token
-        // );
-
         return {
           ...token,
           access_token: account.access_token,
           expires_at:
             account.expires_at || Math.floor(Date.now() / 1000) + 3600,
           refresh_token: account.refresh_token,
+          id_token: account.id_token,
         };
       } else if (Date.now() < token.expires_at * 1000) {
-        // console.log(
-        //   "Test run callback route is else if{...}",
-        //   "this is Date.noe and token.expires_at ,token.refresh_token",
-        //   Date.now(),
-        //   token.expires_at,
-        //   token.refresh_token
-        // );
-
         return token;
       } else {
-        // console.log(
-        //   "Test run callback route is else{...}",
-        //   "this is token.refresh_token",
-        //   token.refresh_token
-        // );
-
         if (!token.refresh_token) throw new TypeError("Missing refresh_token");
 
         try {
@@ -114,6 +95,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.access_token = token.access_token;
         session.expires_at = token.expires_at;
         session.refresh_token = token.refresh_token;
+        session.id_token = token.id_token;
       }
 
       if (token.error) {
